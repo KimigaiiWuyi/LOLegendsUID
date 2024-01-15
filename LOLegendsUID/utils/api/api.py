@@ -1,0 +1,12 @@
+HOST = 'https://www.wegame.com.cn'
+_API = '/api/v1/wegame.pallas.game.LolBattle'
+SearchAPI = f"{HOST}{_API}/SearchPlayer"
+SummonerAPI = f'{HOST}{_API}/GetSummonerInfo'
+BattleListAPI = f'{HOST}{_API}/GetBattleList'
+UserLabelAPI = f'{HOST}{_API}/GetUserLabel'
+PlayerRecentAPI = f'{HOST}{_API}/GetPlayerRecentStat'
+PlayerChampionAPI = f'{HOST}{_API}/GetChampion'
+PlayerSkinAPI = f'{HOST}{_API}/GetSkin'
+BattleReportAPI = f'{HOST}{_API}/GetBattleReport'
+BattleDetailAPI = f'{HOST}{_API}/GetBattleDetail'
+UserSnapshotAPI = f'{HOST}{_API}/GetUserSnapshot'
