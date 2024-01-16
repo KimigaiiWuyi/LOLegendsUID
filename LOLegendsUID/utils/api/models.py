@@ -1,4 +1,4 @@
-from typing import List, TypedDict
+from typing import List, Literal, TypedDict
 
 
 class ResultInfo(TypedDict):
@@ -8,10 +8,14 @@ class ResultInfo(TypedDict):
 
 class PlayerInfo(TypedDict):
     openid: str
+    '''真正的用户UID'''
     area: int
+    '''大区信息'''
     icon_id: int
     level: int
+    '''用户等级(456)'''
     tier: int
+    '''段位信息(255 -> 翡翠4)'''
     queue: int
 
 
@@ -21,14 +25,22 @@ class ExtInfo(TypedDict):
 
 class SummonerInfo(TypedDict):
     id: int
+    '''用户的ID'''
     name: str
+    '''用户的名称'''
     level: int
+    '''用户等级(456)'''
     experience: int
+    '''用户经验'''
     icon_id: int
     praise: int
+    '''点赞数'''
     discredit: int
+    '''点踩数'''
     top_of_canyon: bool
+    '''是否开启峡谷之巅'''
     openid: str
+    '''真正的用户UID'''
     ext: ExtInfo
 
 
@@ -83,12 +95,16 @@ class BattleInfo(TypedDict):
 
 class CommonChampionInfo(TypedDict):
     key: int
+    '''单个英雄ID'''
     value: int
+    '''使用次数'''
 
 
 class CommonPositionInfo(TypedDict):
-    Key: str
+    Key: Literal['UTILITY', 'JUNGLE', 'MIDDLE', 'TOP', 'BOTTOM']
+    '''位置'''
     Value: int
+    '''所有位置这个value加起来等于20, 可用于计算百分比'''
 
 
 class RecentStateInfo(TypedDict):
@@ -98,34 +114,58 @@ class RecentStateInfo(TypedDict):
     win_times: int
     play_times: int
     last_game_id: str
+    '''最后一场比赛的Game_id'''
     kda: int
+    '''KDA(9270 = 9.3)除100并四舍五入保留一位小数'''
     last_game_time: str
+    '''最后一场比赛的时间戳, 1705390492179'''
     common_use_champions: List[CommonChampionInfo]
     common_position: List[CommonPositionInfo]
 
 
 class GameCareerInfo(TypedDict):
     total_mvp_times: int
+    '''总MVP次数'''
     total_svp_times: int
+    '''总SVP次数'''
     total_god_likes: int
+    '''总超神次数'''
     total_penta_kills: int
+    '''总五杀次数'''
     total_quadra_kills: int
+    '''总四杀次数'''
     total_triple_kills: int
+    '''总三杀次数'''
     max_consecutive_wins: int
+    '''最高连胜次数'''
     highest_game_score: int
+    '''最高评分(167138 = 16.7)除10000并保留一位小数'''
     most_kills_num: int
+    '''最高杀人次数'''
     most_assists_num: int
+    '''最高助攻数'''
     most_spree_kills_num: int
+    '''最高连杀数'''
     most_damage_num: int
+    '''最高伤害数'''
     most_damage_taken_num: int
+    '''最高承伤数'''
     most_gold_earned_num: int
+    '''最高经济数'''
     most_minions_kill_num: int
+    '''最高补刀数'''
     most_turrets_kill_num: int
+    '''最高拆塔数'''
     total_kills: int
+    '''全部击杀数量'''
     total_assists: int
+    '''全部助攻数量'''
     total_ward_placed: int
+    '''不知道是啥'''
     longest_game_num: int
+    '''较长对局数量'''
     shortest_game_num: int
+    '''较短对局数量'''
 
 
 class PlayerStatsApiResponse(TypedDict):
@@ -136,21 +176,34 @@ class PlayerStatsApiResponse(TypedDict):
 
 class ChampionInfo(TypedDict):
     champion_id: int
+    '''英雄的ID'''
     total: int
+    '''总对局数'''
     wins: int
+    '''总获胜数'''
     expire_day: int
+    '''还有多少天到期, 永久的话是0'''
     used_exp: int
+    '''英雄熟练度'''
     instance_id: str
+    '''唯一的实例ID'''
     lanes: List[str]
+    '''这个是可能存在的分录, 例如mid、support等等'''
     sid_exp: int
+    '''不知道是啥'''
 
 
 class SkinInfo(TypedDict):
     id: int
+    '''皮肤的ID'''
     expire_day: int
+    '''还有多少天到期, 永久的话是0'''
     instance_id: str
+    '''唯一的实例ID'''
     create_time: str
+    '''获得时间戳 1610081250'''
     chromas: int
+    '''炫彩皮肤的数量'''
 
 
 class SkinChampionInfo(TypedDict):
