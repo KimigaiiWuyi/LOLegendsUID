@@ -1,9 +1,13 @@
+from pathlib import Path
 from typing import Any, Dict, List, Union, Literal, Optional, cast
 
 from gsuid_core.logger import logger
+from gsuid_core.utils.image.convert import convert_img
+from gsuid_core.utils.download_resource.download_file import download
 from aiohttp import FormData, TCPConnector, ClientSession, ContentTypeError
 
 from .api import (
+    ResAPI,
     SearchAPI,
     SummonerAPI,
     BattleListAPI,
@@ -24,6 +28,17 @@ from .models import (
     PlayerSkinAPIResponse,
     PlayerStatsApiResponse,
     BattleReportAPIResponse,
+)
+from ..resource.RESOURCE_PATH import (
+    CARD_PATH,
+    ITEMS_PATH,
+    RESOURCE_PATH,
+    USERICON_PATH,
+    CHAMPIONS_PATH,
+    RUNESPERK_PATH,
+    SKINS_SPLASH_PATH,
+    SUMMONABILITY_PATH,
+    SKINS_ORIGINAL_PATH,
 )
 
 
@@ -226,6 +241,54 @@ class WeGameApi:
         if isinstance(data, int):
             return data
         return cast(List[UserSnapshot], data['snapshots'])
+
+    async def get_resource(
+        self,
+        type: Literal[
+            'items',
+            'card',
+            'runesperk',
+            'skins/splash',
+            'skins/original',
+            'usericon',
+            'champions',
+            'summonability',
+        ],
+        resource_id: str,
+        download_to: Optional[Path] = None,
+        is_get_data: bool = True,
+    ) -> Optional[str]:
+        if type in ['skins/splash', 'skins/original', 'card']:
+            suffix = 'jpg'
+        else:
+            suffix = 'png'
+        FILE_NAME = f'{resource_id}.{suffix}'
+        URL = f'{ResAPI}/{type}/{FILE_NAME}'
+
+        if download_to is None:
+            if type == 'skins/splash':
+                download_to = SKINS_SPLASH_PATH
+            elif type == 'skins/original':
+                download_to = SKINS_ORIGINAL_PATH
+            elif type == 'card':
+                download_to = CARD_PATH
+            elif type == 'usericon':
+                download_to = USERICON_PATH
+            elif type == 'champions':
+                download_to = CHAMPIONS_PATH
+            elif type == 'summonability':
+                download_to = SUMMONABILITY_PATH
+            elif type == 'runesperk':
+                download_to = RUNESPERK_PATH
+            elif type == 'items':
+                download_to = ITEMS_PATH
+            else:
+                download_to = RESOURCE_PATH
+
+        await download(URL, download_to, FILE_NAME, None, '[LOLegendsUID]')
+
+        if is_get_data and (download_to / FILE_NAME).exists():
+            return await convert_img(download_to / FILE_NAME)
 
     async def _wg_request(
         self,
