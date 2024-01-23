@@ -6,29 +6,6 @@ from gsuid_core.utils.image.convert import convert_img
 from gsuid_core.utils.download_resource.download_file import download
 from aiohttp import FormData, TCPConnector, ClientSession, ContentTypeError
 
-from .api import (
-    ResAPI,
-    SearchAPI,
-    SummonerAPI,
-    BattleListAPI,
-    PlayerSkinAPI,
-    BattleDetailAPI,
-    BattleReportAPI,
-    PlayerRecentAPI,
-    UserSnapshotAPI,
-    PlayerChampionAPI,
-)
-from .models import (
-    BattleInfo,
-    PlayerInfo,
-    BattleDetail,
-    ChampionInfo,
-    SummonerInfo,
-    UserSnapshot,
-    PlayerSkinAPIResponse,
-    PlayerStatsApiResponse,
-    BattleReportAPIResponse,
-)
 from ..resource.RESOURCE_PATH import (
     CARD_PATH,
     ITEMS_PATH,
@@ -39,6 +16,37 @@ from ..resource.RESOURCE_PATH import (
     SKINS_SPLASH_PATH,
     SUMMONABILITY_PATH,
     SKINS_ORIGINAL_PATH,
+)
+from .models import (
+    BattleInfo,
+    PlayerInfo,
+    BattleDetail,
+    ChampionInfo,
+    SummonerInfo,
+    UserSnapshot,
+    TFTBattleList,
+    TFTGameCareer,
+    TFTBattleDetail,
+    TFTBattleReport,
+    PlayerSkinAPIResponse,
+    PlayerStatsApiResponse,
+    BattleReportAPIResponse,
+)
+from .api import (
+    ResAPI,
+    SearchAPI,
+    SummonerAPI,
+    BattleListAPI,
+    PlayerSkinAPI,
+    BattleDetailAPI,
+    BattleReportAPI,
+    PlayerRecentAPI,
+    UserSnapshotAPI,
+    TFTBattleListAPI,
+    TFTGameCareerAPI,
+    PlayerChampionAPI,
+    TFTBattleDetailAPI,
+    TFTBattleReportAPI,
 )
 
 
@@ -52,7 +60,7 @@ class WeGameApi:
     ):
         data = await self._wg_request(
             SearchAPI,
-            json={"nickname": player_name, "from_src": "lol_helper"},
+            json={'nickname': player_name, 'from_src': 'lol_helper'},
         )
         if isinstance(data, int):
             return data
@@ -69,10 +77,10 @@ class WeGameApi:
         data = await self._wg_request(
             SummonerAPI,
             json={
-                "account_type": 2,
-                "id": uid,
-                "area": area,
-                "from_src": "tft_helper",
+                'account_type': 2,
+                'id': uid,
+                'area': area,
+                'from_src': 'tft_helper',
             },
         )
         if isinstance(data, int):
@@ -90,13 +98,13 @@ class WeGameApi:
         data = await self._wg_request(
             BattleListAPI,
             json={
-                "account_type": 2,
-                "area": area,
-                "id": uid,
-                "count": 8,
-                "filter": "",
-                "offset": 0,
-                "from_src": "lol_helper",
+                'account_type': 2,
+                'area': area,
+                'id': uid,
+                'count': 8,
+                'filter': '',
+                'offset': 0,
+                'from_src': 'lol_helper',
             },
         )
         if isinstance(data, int):
@@ -116,10 +124,10 @@ class WeGameApi:
         data = await self._wg_request(
             PlayerRecentAPI,
             json={
-                "account_type": 2,
-                "id": uid,
-                "area": area,
-                "from_src": "lol_helper",
+                'account_type': 2,
+                'id': uid,
+                'area': area,
+                'from_src': 'lol_helper',
             },
         )
         if isinstance(data, int):
@@ -139,15 +147,15 @@ class WeGameApi:
         data = await self._wg_request(
             PlayerChampionAPI,
             json={
-                "account_type": 2,
-                "id": uid,
-                "area": area,
-                "from_src": "lol_helper",
+                'account_type': 2,
+                'id': uid,
+                'area': area,
+                'from_src': 'lol_helper',
             },
         )
         if isinstance(data, int):
             return data
-        return cast(List[ChampionInfo], data["champion_list"])
+        return cast(List[ChampionInfo], data['champion_list'])
 
     async def get_player_skin_stat(self, uid: str, area: Optional[int] = None):
         if ':' in uid:
@@ -160,10 +168,10 @@ class WeGameApi:
         data = await self._wg_request(
             PlayerSkinAPI,
             json={
-                "account_type": 2,
-                "id": uid,
-                "area": area,
-                "from_src": "lol_helper",
+                'account_type': 2,
+                'id': uid,
+                'area': area,
+                'from_src': 'lol_helper',
             },
         )
         if isinstance(data, int):
@@ -181,11 +189,11 @@ class WeGameApi:
         data = await self._wg_request(
             BattleReportAPI,
             json={
-                "account_type": 2,
-                "area": area,
-                "id": uid,
-                "sids": [255],
-                "from_src": "lol_helper",
+                'account_type': 2,
+                'area': area,
+                'id': uid,
+                'sids': [255],
+                'from_src': 'lol_helper',
             },
         )
         if isinstance(data, int):
@@ -205,11 +213,11 @@ class WeGameApi:
         data = await self._wg_request(
             BattleDetailAPI,
             json={
-                "account_type": 2,
-                "area": area,
-                "id": uid,
-                "game_id": game_id,
-                "from_src": "lol_helper",
+                'account_type': 2,
+                'area': area,
+                'id': uid,
+                'game_id': game_id,
+                'from_src': 'lol_helper',
             },
         )
         if isinstance(data, int):
@@ -229,18 +237,110 @@ class WeGameApi:
         data = await self._wg_request(
             UserSnapshotAPI,
             json={
-                "account_type": 2,
+                'account_type': 2,
                 'action_type': 0,
-                "area": area,
-                "id": uid,
-                "limit": 3,
+                'area': area,
+                'id': uid,
+                'limit': 3,
                 'offset': 0,
-                "from_src": "lol_helper",
+                'from_src': 'lol_helper',
             },
         )
         if isinstance(data, int):
             return data
         return cast(List[UserSnapshot], data['snapshots'])
+
+    async def get_tft_gamecareer(self, uid: str, area: Optional[int] = None):
+        if ':' in uid:
+            uid_data = uid.split(':')
+            uid, area = uid_data[0], int(uid_data[1])
+
+        if area is None:
+            return -1
+
+        data = await self._wg_request(
+            TFTGameCareerAPI,
+            json={
+                'account_type': 2,
+                'id': uid,
+                'area': area,
+                'from_src': 'tft_helper',
+            },
+        )
+        if isinstance(data, int):
+            return data
+        return cast(TFTGameCareer, data['game_career'])
+
+    async def get_tft_battle_list(self, uid: str, area: Optional[int] = None):
+        if ':' in uid:
+            uid_data = uid.split(':')
+            uid, area = uid_data[0], int(uid_data[1])
+
+        if area is None:
+            return -1
+
+        data = await self._wg_request(
+            TFTBattleListAPI,
+            json={
+                'account_type': 2,
+                'id': uid,
+                'area': area,
+                'offset': 0,
+                'count': 7,
+                'filter': 'all',
+                'from_src': 'tft_helper',
+            },
+        )
+        if isinstance(data, int):
+            return data
+        return cast(List[TFTBattleList], data['battles'])
+
+    async def get_tft_battle_report(
+        self, uid: str, area: Optional[int] = None
+    ):
+        if ':' in uid:
+            uid_data = uid.split(':')
+            uid, area = uid_data[0], int(uid_data[1])
+
+        if area is None:
+            return -1
+
+        data = await self._wg_request(
+            TFTBattleReportAPI,
+            json={
+                'account_type': 2,
+                'id': uid,
+                'area': area,
+                'from_src': 'tft_helper',
+            },
+        )
+        if isinstance(data, int):
+            return data
+        return cast(TFTBattleReport, data)
+
+    async def get_tft_battle_detail(
+        self, uid: str, game_id: Union[str, int], area: Optional[int] = None
+    ):
+        if ':' in uid:
+            uid_data = uid.split(':')
+            uid, area = uid_data[0], int(uid_data[1])
+
+        if area is None:
+            return -1
+
+        data = await self._wg_request(
+            TFTBattleDetailAPI,
+            json={
+                'account_type': 2,
+                'id': uid,
+                'area': area,
+                'game_id': int(game_id),
+                'from_src': 'tft_helper',
+            },
+        )
+        if isinstance(data, int):
+            return data
+        return cast(TFTBattleDetail, data['battle_detail'])
 
     async def get_resource(
         self,
@@ -293,7 +393,7 @@ class WeGameApi:
     async def _wg_request(
         self,
         url: str,
-        method: Literal["GET", "POST"] = "GET",
+        method: Literal['GET', 'POST'] = 'GET',
         header: Dict[str, str] = _HEADER,
         params: Optional[Dict[str, Any]] = None,
         json: Optional[Dict[str, Any]] = None,
@@ -315,7 +415,7 @@ class WeGameApi:
                     raw_data = await resp.json()
                 except ContentTypeError:
                     _raw_data = await resp.text()
-                    raw_data = {"retcode": -999, "data": _raw_data}
+                    raw_data = {'retcode': -999, 'data': _raw_data}
                 logger.debug(raw_data)
                 if (
                     'result' in raw_data

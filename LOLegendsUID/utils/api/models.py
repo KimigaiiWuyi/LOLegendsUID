@@ -1,4 +1,4 @@
-from typing import List, Literal, TypedDict
+from typing import Dict, List, Union, Literal, TypedDict
 
 
 class ResultInfo(TypedDict):
@@ -388,3 +388,140 @@ class UserSnapshot(TypedDict):
     team_color: int
     queue_id: int
     exdata: str
+
+
+class TFTGameCareer(TypedDict):
+    total: int
+    '''总共游玩次数'''
+    top1: int
+    '''第一名次数'''
+    win_rate: str
+    '''登顶率 / 870（8.70%）（需要除10000）'''
+    top3: int
+    '''前三次数'''
+    top_three_rate: str
+    '''前三率 / 2464（24.64%）（需要除10000）'''
+    average_ranking: str
+    '''平均排名 / 393（3.93）（需要除100）'''
+
+
+class TFTItem(TypedDict):
+    id: int
+    name: str
+    character_id: str
+    chosen: str
+    items: List[str]
+    star_num: int
+    base_price: int
+    piece_price: int
+    itemNames: List[str]
+
+
+class TFTBattleList(TypedDict):
+    area: int
+    game_id: str
+    game_match_type: int
+    ranking: int
+    end_time: str
+    achievements: List[Union[int, str]]
+    pieces: List[TFTItem]
+    game_score: int
+    snapshot: bool
+
+
+class TFTSeasonItem(TypedDict):
+    game_type: int
+    total: int
+    top1: int
+    win_rate: str
+    top3: int
+    top_three_rate: str
+    tier: int
+    queue: int
+    win_point: int
+    turbo_rank_title: str
+
+
+class TFTSeason(TypedDict):
+    sid: int
+    name: str
+    items: List[TFTSeasonItem]
+
+
+class TFTMatch(TypedDict):
+    game_type: int
+    total: int
+    top1: int
+    win_rate: str
+    top3: int
+    top_three_rate: str
+    tier: int
+    queue: int
+    win_point: int
+    turbo_rank_title: str
+
+
+class TFTBattleReport(TypedDict):
+    result: ResultInfo
+    match: TFTMatch
+    seasons: List[TFTSeason]
+
+
+class Trait(TypedDict):
+    name: str
+    num_units: int
+    style: int
+    tier_current: int
+    tier_total: int
+    id: int
+
+
+class Companion(TypedDict):
+    content_id: str
+    skin_id: int
+    species: str
+
+
+class Piece(TypedDict):
+    id: int
+    name: str
+    character_id: str
+    chosen: str
+    items: List[str]
+    star_num: int
+    base_price: int
+    piece_price: int
+    itemNames: List[str]
+
+
+class MemberExploit(TypedDict):
+    openid: str
+    nickname: str
+    head_icon_id: str
+    total_damage_to_players: int
+    gold_left: int
+    blood: int
+    total_trait_num: int
+    active_trait_num: int
+    traits: List[Trait]
+    companion: Companion
+    time_eliminated: float
+    ranking: int
+    game_score: int
+    piece_list_price: int
+    level: int
+    players_eliminated: int
+    piece_list: List[Piece]
+    augmentsStr: str
+    game_rank_list: List[Dict]
+
+
+class TFTBattleDetail(TypedDict):
+    game_id: str
+    end_time: str
+    game_match_type: int
+    duration: int
+    tft_set_number: int
+    set_name: str
+    member_exploit_list: List[MemberExploit]
+    areaId: int

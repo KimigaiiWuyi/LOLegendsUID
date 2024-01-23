@@ -1,16 +1,22 @@
 HOST = 'https://www.wegame.com.cn'
-_API = '/api/v1/wegame.pallas.game.LolBattle'
+LOL_API = '/api/v1/wegame.pallas.game.LolBattle'
+TFT_API = '/api/v1/wegame.pallas.game.TftBattle'
 
-SearchAPI = f"{HOST}{_API}/SearchPlayer"
-SummonerAPI = f'{HOST}{_API}/GetSummonerInfo'
-BattleListAPI = f'{HOST}{_API}/GetBattleList'
-UserLabelAPI = f'{HOST}{_API}/GetUserLabel'
-PlayerRecentAPI = f'{HOST}{_API}/GetPlayerRecentStat'
-PlayerChampionAPI = f'{HOST}{_API}/GetChampion'
-PlayerSkinAPI = f'{HOST}{_API}/GetSkin'
-BattleReportAPI = f'{HOST}{_API}/GetBattleReport'
-BattleDetailAPI = f'{HOST}{_API}/GetBattleDetail'
-UserSnapshotAPI = f'{HOST}{_API}/GetUserSnapshot'
+SearchAPI = f"{HOST}{LOL_API}/SearchPlayer"
+SummonerAPI = f'{HOST}{LOL_API}/GetSummonerInfo'
+BattleListAPI = f'{HOST}{LOL_API}/GetBattleList'
+UserLabelAPI = f'{HOST}{LOL_API}/GetUserLabel'
+PlayerRecentAPI = f'{HOST}{LOL_API}/GetPlayerRecentStat'
+PlayerChampionAPI = f'{HOST}{LOL_API}/GetChampion'
+PlayerSkinAPI = f'{HOST}{LOL_API}/GetSkin'
+BattleReportAPI = f'{HOST}{LOL_API}/GetBattleReport'
+BattleDetailAPI = f'{HOST}{LOL_API}/GetBattleDetail'
+UserSnapshotAPI = f'{HOST}{LOL_API}/GetUserSnapshot'
+
+TFTGameCareerAPI = f'{HOST}{TFT_API}/GetGameCareer'
+TFTBattleListAPI = f'{HOST}{TFT_API}/GetBattleList'
+TFTBattleReportAPI = f'{HOST}{TFT_API}/GetBattleReport'
+TFTBattleDetailAPI = f'{HOST}{TFT_API}/GetBattleDetail'
 
 IMG_HOST = 'https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis'
 ResAPI = f'{IMG_HOST}/images/resources'
@@ -30,3 +36,5 @@ ResAPI = f'{IMG_HOST}/images/resources'
 # https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/champions/136.png
 # 召唤师技能ICON 40*40px
 # https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/summonability/32.png
+# 段位ICON 130*130px
+# https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/v2/tier/tier-7.png
