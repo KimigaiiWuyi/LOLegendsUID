@@ -15,8 +15,9 @@ class PlayerInfo(TypedDict):
     level: int
     '''用户等级(456)'''
     tier: int
-    '''段位信息(255 -> 翡翠4)'''
+    '''段位信息(255 -> 无段位)'''
     queue: int
+    '''段位信息(0 -> I)'''
 
 
 class ExtInfo(TypedDict):
@@ -204,6 +205,8 @@ class SkinInfo(TypedDict):
     '''获得时间戳 1610081250'''
     chromas: int
     '''炫彩皮肤的数量'''
+    hero_id: int
+    '''原本API不提供，自己加入的'''
 
 
 class SkinChampionInfo(TypedDict):
@@ -218,6 +221,26 @@ class PlayerSkinAPIResponse(TypedDict):
     championSkins: List[SkinChampionInfo]
     champion_num: int
     skin_num: int
+
+
+class ChampionSkin(TypedDict):
+    heroId: str
+    skinId: str
+
+
+class Profiles(TypedDict):
+    cardbg: str
+    '''{bgType:1,championSkin:{heroId:887,skinId:887011}}'''
+    label: str
+    ''''''
+    showExpType: str
+    '''0'''
+    skincabinet: str
+    '''[{heroId:887,skinId:887011}, ... ,] * 4'''
+    skincabinetshow: str
+    '''1'''
+    tag: str
+    ''''''
 
 
 class SeasonInfo(TypedDict):

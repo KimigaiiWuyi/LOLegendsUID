@@ -1,10 +1,12 @@
 from typing import Union
 
-UID_HINT = '[Majs] 你还没有绑定UID，请先使用[雀魂绑定]命令进行绑定'
-
+UID_HINT = '[lol] 你还没有绑定UID，请先使用[lol绑定]命令进行绑定'
+CK_HINT = '[lol] 你还没有添加可用CK，请先使用[lol添加ck]命令进行绑定'
 
 error_dict = {
     -51: UID_HINT,
+    -511: CK_HINT,
+    8000102: '8000102 - auth check failed!\n该CK失效或不正确, 请检查错误CK!',
 }
 
 
