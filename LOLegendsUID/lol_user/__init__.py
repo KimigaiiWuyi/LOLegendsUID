@@ -37,11 +37,6 @@ async def send_lol_add_ck_msg(bot: Bot, ev: Event):
 async def send_lol_bind_uid_msg(bot: Bot, ev: Event):
     uid = ev.text.strip()
 
-    if not uid:
-        return await bot.send(
-            '该命令需要带上正确的uid!\n如果不知道, 可以使用lol搜索命令查询\n如lol搜索Wuyi'
-        )
-
     await bot.logger.info('[LOL] 开始执行[绑定/解绑用户信息]')
     qid = ev.user_id
     await bot.logger.info('[LOL] [绑定/解绑]UserID: {}'.format(qid))
@@ -50,6 +45,10 @@ async def send_lol_bind_uid_msg(bot: Bot, ev: Event):
         return await bot.send('你输入了错误的格式!\n请使用lol搜索命令获取正确的UID')
 
     if '绑定' in ev.command:
+        if not uid:
+            return await bot.send(
+                '该命令需要带上正确的uid!\n如果不知道, 可以使用lol搜索命令查询\n如lol搜索Wuyi'
+            )
         data = await LOLBind.insert_uid(
             qid, ev.bot_id, uid, ev.group_id, is_digit=False
         )

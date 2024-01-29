@@ -53,6 +53,7 @@ from .api import (
     SummonerAPI,
     BattleListAPI,
     PlayerSkinAPI,
+    SkinLoadingAPI,
     BattleDetailAPI,
     BattleReportAPI,
     PlayerRecentAPI,
@@ -398,21 +399,17 @@ class WeGameApi:
         return cast(TFTBattleDetail, data['battle_detail'])
 
     async def get_hero_list(self):
-        data = await self._wg_request(HERO_LIST_API, need_ck=False)
+        data = await self._help_request(HERO_LIST_API)
         if isinstance(data, int):
             return data
-
         data = json.dumps(data, ensure_ascii=False, indent=2)
         async with aiofiles.open(HERO_LIST, 'w', encoding='utf-8') as file:
             await file.write(data)
 
     async def get_hero_info(self, hero_id: Union[str, int]):
-        data = await self._wg_request(
-            HERO_DETAIL.format(hero_id), need_ck=False
-        )
+        data = await self._help_request(HERO_DETAIL.format(hero_id))
         if isinstance(data, int):
             return data
-
         data = json.dumps(data, ensure_ascii=False, indent=2)
         async with aiofiles.open(
             HERO_DATA_PATH / f'{hero_id}.json', 'w', encoding='utf-8'
@@ -435,7 +432,6 @@ class WeGameApi:
         ],
         resource_id: Union[str, int],
         download_to: Optional[Path] = None,
-        is_get_data: bool = True,
     ) -> Image.Image:
         if type in ['skins/splash', 'skins/original', 'skins/loading', 'card']:
             suffix = 'jpg'
@@ -445,6 +441,8 @@ class WeGameApi:
 
         if type == 'tier':
             URL = f'{IMG_BASE}/lol/v2/tier/{FILE_NAME}'
+        elif type == 'skins/loading':
+            URL = f'{SkinLoadingAPI}/{FILE_NAME}'
         else:
             URL = f'{ResAPI}/{type}/{FILE_NAME}'
 
@@ -472,13 +470,29 @@ class WeGameApi:
             else:
                 download_to = RESOURCE_PATH
 
+        return await self.get_image(URL, download_to, FILE_NAME)
+
+    async def get_image(self, URL: str, download_to: Path, FILE_NAME: str):
+        if not URL:
+            return Image.new('RGBA', (128, 128))
+
         if not (download_to / FILE_NAME).exists():
             await download(URL, download_to, FILE_NAME, None, '[LOLegendsUID]')
 
-        if is_get_data and (download_to / FILE_NAME).exists():
+        if (download_to / FILE_NAME).exists():
             return Image.open(download_to / FILE_NAME)
         else:
             return Image.new('RGBA', (128, 128))
+
+    async def _help_request(self, url: str) -> Union[Dict, int]:
+        try:
+            async with AsyncClient(verify=False) as session:
+                data = await session.get(url)
+                d = data.text
+                logger.debug(d)
+                return json.loads(d)
+        except:  # noqa:E722
+            return -500
 
     async def _wg_request(
         self,

@@ -26,6 +26,7 @@ HERO_DETAIL = f'{QQ101_BASE}/hero/' + '{}.js'
 IMG_BASE = 'https://wegame.gtimg.com/g.26-r.c2d3c/helper'
 IMG_HOST = f'{IMG_BASE}/lol/assis'
 ResAPI = f'{IMG_HOST}/images/resources'
+SkinLoadingAPI = 'https://game.gtimg.cn/images/lol/act/img/skinloading'
 # 物品 40*40px
 # https://wegame.gtimg.com/g.26-r.c2d3c/helper/lol/assis/images/resources/items/1058.png
 # 英雄竖版 180*327px

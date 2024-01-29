@@ -12,12 +12,8 @@ from ..utils.lol_api import wg_api
 from ..utils.api.models import SkinInfo
 from ..utils.error_reply import get_error
 from ..utils.resource.HERO_INFO import get_hero_data
-from ..utils.api.remote_const import (
-    LOL_TIER,
-    LOL_QUEUE,
-    LOL_Champion,
-    LOL_GameArea,
-)
+from ..utils.resource.RESOURCE_PATH import SKINS_LOADING_PATH
+from ..utils.api.remote_const import LOL_TIER, LOL_QUEUE, LOL_GameArea
 
 TEXT_PATH = Path(__file__).parent / 'texture2d'
 
@@ -51,7 +47,7 @@ async def draw_lol_info_img(ev: Event, uid: str) -> Union[str, bytes]:
     _id, _area = uid.split(':')
     player_area = LOL_GameArea[_area]
     player_area_str = f"{player_area['name']}·Lv{info_data['level']}"
-    like_and_dis = f"{info_data['praise']}赞 · {info_data['discredit']}踩"
+    like_and_dis = f"{info_data['praise']}赞·{info_data['discredit']}踩"
     play_times = stat_data['recent_state']['play_times']
     win_times = stat_data['recent_state']['win_times']
 
@@ -84,7 +80,7 @@ async def draw_lol_info_img(ev: Event, uid: str) -> Union[str, bytes]:
     queue = battle_data['season_list'][0]['queue']
 
     kda = stat_data['recent_state']['kda']
-    kda_str = '{:.1f}%'.format(kda / 100)
+    kda_str = '{:.1f}'.format(kda / 1000)
 
     match_times = battle_data['battle_count']['total_match_games']
     match_win_times = battle_data['battle_count']['total_match_wins']
@@ -151,7 +147,7 @@ async def draw_lol_info_img(ev: Event, uid: str) -> Union[str, bytes]:
 
     rank_img = await wg_api.get_resource('tier', f'tier-{tier}')
     icon_img = await wg_api.get_resource('usericon', info_data['icon_id'])
-    icon_img = icon_img.resize((84, 84))
+    icon_img = icon_img.resize((84, 84)).convert('RGBA')
     title.paste(icon_img, (54, 259), icon_img)
     title.paste(rank_img, (732, 113), rank_img)
 
@@ -165,10 +161,10 @@ async def draw_lol_info_img(ev: Event, uid: str) -> Union[str, bytes]:
 
     title_draw.text((799, 259), rank, W, cf(32), 'mm')
 
-    title_draw.text((629, 367), str(mvp_times), B, cf(26), 'lm')
-    title_draw.text((797, 367), str(svp_times), B, cf(26), 'lm')
-    title_draw.text((629, 443), str(kill5_times), B, cf(26), 'lm')
-    title_draw.text((797, 443), str(kill8_times), B, cf(26), 'lm')
+    title_draw.text((633, 367), str(mvp_times), B, cf(26), 'lm')
+    title_draw.text((801, 367), str(svp_times), B, cf(26), 'lm')
+    title_draw.text((633, 443), str(kill5_times), B, cf(26), 'lm')
+    title_draw.text((801, 443), str(kill8_times), B, cf(26), 'lm')
 
     title.paste(title_cover, (0, 0), title_cover)
     img.paste(title, (0, 0), title)
@@ -177,18 +173,20 @@ async def draw_lol_info_img(ev: Event, uid: str) -> Union[str, bytes]:
     mid = Image.open(TEXT_PATH / 'mid.png')
     mid_draw = ImageDraw.Draw(mid)
 
-    mid_draw.text((127, 114), kda_str, W, cf(47), 'mm')
-    mid_draw.text((127 + 160, 114), match_win_rate, W, cf(47), 'mm')
-    mid_draw.text((127 + 160, 142), str(match_times), S, cf(26), 'mm')
+    mid_draw.text((130, 114), kda_str, W, cf(36), 'mm')
 
-    mid_draw.text((127 + 320, 114), rank_win_rate, W, cf(47), 'mm')
-    mid_draw.text((127 + 320, 142), str(rank_times), S, cf(26), 'mm')
+    o = 161
+    mid_draw.text((130 + o, 114), match_win_rate, W, cf(36), 'mm')
+    mid_draw.text((130 + o, 150), str(match_times) + '场', S, cf(22), 'mm')
 
-    mid_draw.text((127 + 480, 170), arm_win_rate, W, cf(47), 'mm')
-    mid_draw.text((127 + 480, 142), str(arm_times), S, cf(26), 'mm')
+    mid_draw.text((130 + o * 2, 114), rank_win_rate, W, cf(36), 'mm')
+    mid_draw.text((130 + o * 2, 150), str(rank_times) + '场', S, cf(22), 'mm')
 
-    mid_draw.text((127 + 640, 170), team_win_rate, W, cf(47), 'mm')
-    mid_draw.text((127 + 640, 142), str(team_times), S, cf(26), 'mm')
+    mid_draw.text((130 + o * 3, 114), arm_win_rate, W, cf(36), 'mm')
+    mid_draw.text((130 + o * 3, 150), str(arm_times) + '场', S, cf(22), 'mm')
+
+    mid_draw.text((130 + o * 4, 114), team_win_rate, W, cf(36), 'mm')
+    mid_draw.text((130 + o * 4, 150), str(team_times) + '场', S, cf(22), 'mm')
     img.paste(mid, (0, 485), mid)
 
     '''DATA'''
@@ -216,7 +214,7 @@ async def draw_lol_info_img(ev: Event, uid: str) -> Union[str, bytes]:
             skin_num,
         ]
     ):
-        xy = (114 + 135 * index % 6, 75 + 103 * index // 6)
+        xy = (114 + 135 * (index % 6), 75 + 103 * (index // 6))
         data_draw.text(xy, str(msg), W, cf(32), 'mm')
     img.paste(data, (0, 650), data)
 
@@ -230,12 +228,13 @@ async def draw_lol_info_img(ev: Event, uid: str) -> Union[str, bytes]:
     champion_card = Image.open(TEXT_PATH / 'champion_card.png')
     for ci, champion in enumerate(sorted_champion[:5]):
         champion_id = champion['champion_id']
+        hero_data = await get_hero_data(champion_id)
         champion_img = await wg_api.get_resource('card', champion_id)
         champion_img = champion_img.resize((180, 327))
         champion_img.paste(champion_card, (0, 0), champion_card)
         champion_draw = ImageDraw.Draw(champion_img)
 
-        champion_name = LOL_Champion[str(champion_id)]['title']
+        champion_name = hero_data['hero']["name"]
         exp = str(champion['used_exp'])
         total = champion['total']
         wins = champion['wins']
@@ -256,7 +255,7 @@ async def draw_lol_info_img(ev: Event, uid: str) -> Union[str, bytes]:
 
     '''SKIN'''
     skin_bar = Image.open(TEXT_PATH / 'skin_bar.png')
-    img.paste(skin_bar, (0, 360), skin_bar)
+    img.paste(skin_bar, (0, 1360), skin_bar)
 
     skin_list: List[SkinInfo] = []
     for i in skin_data['championSkins']:
@@ -273,21 +272,27 @@ async def draw_lol_info_img(ev: Event, uid: str) -> Union[str, bytes]:
     for si, skin in enumerate(skin_list[:5]):
         hero_data = await get_hero_data(skin['hero_id'])
         skin_name = '未知皮肤'
+        skin_img = ''
         for i in hero_data['skins']:
-            if i['skinId'] == skin['id']:
+            if str(i['skinId']) == str(skin['id']):
                 skin_name = i['name']
+                skin_img = i['loadingImg']
                 break
 
-        instance_id = skin['instance_id']
-        loading_img = await wg_api.get_resource('skins/loading', instance_id)
+        # instance_id = skin['instance_id']
+        # loading_img = await wg_api.get_resource('skins/loading', instance_id)
+
+        loading_img = await wg_api.get_image(
+            skin_img, SKINS_LOADING_PATH, skin_img.split('/')[-1]
+        )
         loading_img = loading_img.resize((308, 560))
         loading_img.paste(skin_card, (0, 0), skin_card)
 
         loading_draw = ImageDraw.Draw(loading_img)
         loading_draw.text((154, 492), skin_name, (255, 201, 150), cf(32), 'mm')
 
-        loading_img = loading_img.resize((140, 255))
-        img.paste(champion_img, (59 + si * 161, 1428), champion_img)
+        loading_img = loading_img.resize((140, 255)).convert('RGBA')
+        img.paste(loading_img, (59 + si * 161, 1428), loading_img)
 
     '''FOOTER'''
     footer = Image.open(TEXT_PATH / 'footer.png')
