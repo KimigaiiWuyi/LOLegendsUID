@@ -134,6 +134,7 @@ async def draw_lol_info_img(ev: Event, uid: str) -> Union[str, bytes]:
     width, height = card_img.size
     middle_bottom_pixel = (width // 2, height - 1)
     rgb_value = card_img.getpixel(middle_bottom_pixel)
+    rgb_value = (15, 23, 36)
 
     card.paste(card_img, (-30, 0), card_img)
     img = Image.new('RGBA', (900, 1800), rgb_value)
@@ -157,7 +158,7 @@ async def draw_lol_info_img(ev: Event, uid: str) -> Union[str, bytes]:
 
     title_draw.text((92, 419), play_times_str, W, cf(32), 'mm')
     title_draw.text((205, 419), win_rate, W, cf(32), 'mm')
-    title_draw.text((318, 419), str(champion_num), W, cf(32), 'mm')
+    title_draw.text((318, 419), str(skin_num), W, cf(32), 'mm')
 
     title_draw.text((799, 259), rank, W, cf(32), 'mm')
 
@@ -211,7 +212,7 @@ async def draw_lol_info_img(ev: Event, uid: str) -> Union[str, bytes]:
             total_assists,
             longest_game,
             shortest_game,
-            skin_num,
+            champion_num,
         ]
     ):
         xy = (114 + 135 * (index % 6), 75 + 103 * (index // 6))
@@ -264,7 +265,8 @@ async def draw_lol_info_img(ev: Event, uid: str) -> Union[str, bytes]:
         skins = []
         for s in i['skins']:
             s['hero_id'] = i['id']
-            skins.append(s)
+            if s['chromas'] == 0:
+                skins.append(s)
         skin_list.extend(skins)
     random.shuffle(skin_list)
 
@@ -275,9 +277,20 @@ async def draw_lol_info_img(ev: Event, uid: str) -> Union[str, bytes]:
         skin_img = ''
         for i in hero_data['skins']:
             if str(i['skinId']) == str(skin['id']):
-                skin_name = i['name']
-                skin_img = i['loadingImg']
-                break
+                if i['chromas'] == '0':
+                    skin_name = i['name']
+                    skin_img = i['loadingImg']
+                    break
+                else:
+                    _new_name: List = i['name'].split(' ')
+                    _new_name.pop()
+                    new_name = ' '.join(_new_name)
+                    for d in hero_data['skins']:
+                        if new_name == d['name']:
+                            skin_name = d['name']
+                            skin_img = d['loadingImg']
+                            break
+                    break
 
         # instance_id = skin['instance_id']
         # loading_img = await wg_api.get_resource('skins/loading', instance_id)

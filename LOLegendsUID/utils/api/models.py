@@ -204,7 +204,7 @@ class SkinInfo(TypedDict):
     create_time: str
     '''获得时间戳 1610081250'''
     chromas: int
-    '''炫彩皮肤的数量'''
+    '''是否是炫彩皮肤'''
     hero_id: int
     '''原本API不提供，自己加入的'''
 
