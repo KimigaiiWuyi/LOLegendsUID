@@ -18,7 +18,8 @@ async def search_player_with_name(name: str):
         return data
 
     result = {}
-    for player in data[:5]:
+    sorted_data = sorted(data, key=lambda x: x['level'], reverse=True)
+    for player in sorted_data[:5]:
         player_uid = player['openid']
         player_rank = (
             f"{LOL_TIER[player['tier']]}·{LOL_QUEUE[player['queue']]}"
