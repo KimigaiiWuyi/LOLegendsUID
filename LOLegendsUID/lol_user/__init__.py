@@ -42,7 +42,9 @@ async def send_lol_bind_uid_msg(bot: Bot, ev: Event):
     await bot.logger.info('[LOL] [绑定/解绑]UserID: {}'.format(qid))
 
     if uid and ':' not in uid:
-        return await bot.send('你输入了错误的格式!\n请使用lol搜索命令获取正确的UID')
+        return await bot.send(
+            '你输入了错误的格式!\n请使用lol搜索命令获取正确的UID'
+        )
 
     if '绑定' in ev.command:
         if not uid:
@@ -84,12 +86,16 @@ async def send_lol_bind_uid_msg(bot: Bot, ev: Event):
 async def send_lol_search_msg(bot: Bot, ev: Event):
     name = ev.text.strip()
     if not name:
-        return await bot.send('必须输入完整的召唤师名称噢！\n例如：lol搜索Wuyi')
+        return await bot.send(
+            '必须输入完整的召唤师名称噢！\n例如：lol搜索Wuyi'
+        )
 
     players = await search_player_with_name(name)
 
     if not players:
-        return await bot.send('未找到相关召唤师！\n请确认召唤师名是否完整, 以及Wegame设置是否允许他人搜索！')
+        return await bot.send(
+            '未找到相关召唤师！\n请确认召唤师名是否完整, 以及Wegame设置是否允许他人搜索！'
+        )
 
     if isinstance(players, Dict):
         buttons = [Button(f'✏️绑定{uid}', f'lol绑定{uid}') for uid in players]
