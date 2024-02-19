@@ -118,7 +118,10 @@ async def draw_lol_info_img(ev: Event, uid: str) -> Union[str, bytes]:
         rank = '无段位'
 
     play_times_str = str(play_times)
-    win_rate = '{:.2f}%'.format((win_times / play_times) * 100)
+    if play_times:
+        win_rate = '{:.2f}%'.format((win_times / play_times) * 100)
+    else:
+        win_rate = 'NaN%'
 
     '''BG'''
     card = Image.new('RGBA', (900, 900))
@@ -126,7 +129,7 @@ async def draw_lol_info_img(ev: Event, uid: str) -> Union[str, bytes]:
     card_bg = json.loads(profile_data['cardbg'])
     card_hero: str = card_bg['championSkin']['heroId']
     card_skin: str = card_bg['championSkin']['skinId']
-    skin_id = card_skin.replace(card_hero, '')
+    skin_id = card_skin.lstrip(card_hero)
     splash_id = f'{card_hero}-{skin_id}'
 
     card_img = await wg_api.get_resource('skins/splash', splash_id)
