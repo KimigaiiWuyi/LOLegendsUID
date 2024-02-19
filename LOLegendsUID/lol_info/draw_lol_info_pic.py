@@ -61,6 +61,7 @@ async def draw_lol_info_img(ev: Event, uid: str) -> Union[str, bytes]:
     kill3_times = stat_data['game_career']['total_triple_kills']
     max_con_win = stat_data['game_career']['max_consecutive_wins']
     highest_score = stat_data['game_career']['highest_game_score']
+    highest_score = '{:.1f}'.format(highest_score / 10000)
     most_kill = stat_data['game_career']['most_kills_num']
     most_assist = stat_data['game_career']['most_assists_num']
     most_spree_kill = stat_data['game_career']['most_spree_kills_num']

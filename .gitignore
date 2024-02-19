@@ -673,3 +673,4 @@ all_image
 testnb2/
 
 .VSCodeCounter
+.pdm-python

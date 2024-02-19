@@ -12,4 +12,7 @@ error_dict = {
 
 
 def get_error(retcode: Union[int, str]) -> str:
-    return error_dict.get(int(retcode), f'未知错误, 错误码为{retcode}!')
+    return error_dict.get(
+        int(retcode),
+        f'未知错误, 错误码为{retcode}, 可能由于未开启Wegame召唤师搜索!',
+    )
