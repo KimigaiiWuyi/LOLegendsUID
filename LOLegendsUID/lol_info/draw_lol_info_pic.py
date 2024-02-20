@@ -184,11 +184,11 @@ async def draw_lol_info_img(ev: Event, uid: str) -> Union[str, bytes]:
     mid_draw.text((130 + o, 114), match_win_rate, W, cf(36), 'mm')
     mid_draw.text((130 + o, 150), str(match_times) + '场', S, cf(22), 'mm')
 
-    mid_draw.text((130 + o * 2, 114), rank_win_rate, W, cf(36), 'mm')
-    mid_draw.text((130 + o * 2, 150), str(rank_times) + '场', S, cf(22), 'mm')
+    mid_draw.text((130 + o * 2, 114), arm_win_rate, W, cf(36), 'mm')
+    mid_draw.text((130 + o * 2, 150), str(arm_times) + '场', S, cf(22), 'mm')
 
-    mid_draw.text((130 + o * 3, 114), arm_win_rate, W, cf(36), 'mm')
-    mid_draw.text((130 + o * 3, 150), str(arm_times) + '场', S, cf(22), 'mm')
+    mid_draw.text((130 + o * 3, 114), rank_win_rate, W, cf(36), 'mm')
+    mid_draw.text((130 + o * 3, 150), str(rank_times) + '场', S, cf(22), 'mm')
 
     mid_draw.text((130 + o * 4, 114), team_win_rate, W, cf(36), 'mm')
     mid_draw.text((130 + o * 4, 150), str(team_times) + '场', S, cf(22), 'mm')
