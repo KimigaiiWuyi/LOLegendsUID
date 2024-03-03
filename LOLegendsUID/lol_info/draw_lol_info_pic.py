@@ -9,17 +9,119 @@ from gsuid_core.utils.image.convert import convert_img
 from gsuid_core.utils.fonts.fonts import core_font as cf
 
 from ..utils.lol_api import wg_api
-from ..utils.api.models import SkinInfo
 from ..utils.error_reply import get_error
 from ..utils.resource.HERO_INFO import get_hero_data
 from ..utils.resource.RESOURCE_PATH import SKINS_LOADING_PATH
 from ..utils.api.remote_const import LOL_TIER, LOL_QUEUE, LOL_GameArea
+from ..utils.api.models import (
+    Profiles,
+    SkinInfo,
+    SummonerInfo,
+    PlayerSkinAPIResponse,
+    PlayerStatsApiResponse,
+    BattleReportAPIResponse,
+)
 
 TEXT_PATH = Path(__file__).parent / 'texture2d'
 
 W = (250, 250, 250)
 S = (227, 227, 227)
 B = (20, 20, 20)
+rgb_value = (15, 23, 36)
+
+
+async def draw_lol_info_bg(profile_data: Profiles):
+    '''BG'''
+    card = Image.new('RGBA', (900, 900))
+    card_mask = Image.open(TEXT_PATH / 'card_mask.png')
+    card_bg = json.loads(profile_data['cardbg'])
+    card_hero: str = card_bg['championSkin']['heroId']
+    card_skin: str = card_bg['championSkin']['skinId']
+    skin_id = card_skin.lstrip(card_hero)
+    splash_id = f'{card_hero}-{skin_id}'
+
+    card_img = await wg_api.get_resource('skins/splash', splash_id)
+    card_img = card_img.resize((960, 540)).convert('RGBA')
+    # width, height = card_img.size
+    # middle_bottom_pixel = (width // 2, height - 1)
+    # rgb_value = card_img.getpixel(middle_bottom_pixel)
+
+    card.paste(card_img, (-30, 0), card_img)
+    img = Image.new('RGBA', (900, 900), rgb_value)
+    img.paste(card, (0, 0), card_mask)
+    # (900, 900)
+    return img
+
+
+async def draw_lol_info_title(
+    uid: str,
+    info_data: SummonerInfo,
+    stat_data: PlayerStatsApiResponse,
+    battle_data: BattleReportAPIResponse,
+    skin_data: PlayerSkinAPIResponse,
+):
+    '''DEAL'''
+    _id, _area = uid.split(':')
+    player_area = LOL_GameArea[_area]
+    player_area_str = f"{player_area['name']}·Lv{info_data['level']}"
+    like_and_dis = f"{info_data['praise']}赞·{info_data['discredit']}踩"
+    play_times = stat_data['recent_state']['play_times']
+    win_times = stat_data['recent_state']['win_times']
+
+    mvp_times = stat_data['game_career']['total_mvp_times']
+    svp_times = stat_data['game_career']['total_svp_times']
+
+    kill8_times = stat_data['game_career']['total_god_likes']
+    kill5_times = stat_data['game_career']['total_penta_kills']
+
+    highest_score = stat_data['game_career']['highest_game_score']
+    highest_score = '{:.1f}'.format(highest_score / 10000)
+    skin_num = skin_data['skin_num']
+
+    tier = battle_data['season_list'][0]['tier']
+    queue = battle_data['season_list'][0]['queue']
+
+    if tier != 255:
+        rank = f'{LOL_TIER[tier]}·{LOL_QUEUE[queue]}'
+    else:
+        rank = '无段位'
+
+    play_times_str = str(play_times)
+    if play_times:
+        win_rate = '{:.2f}%'.format((win_times / play_times) * 100)
+    else:
+        win_rate = 'NaN%'
+
+    '''title'''
+    title = Image.open(TEXT_PATH / 'title.png')
+    title_cover = Image.open(TEXT_PATH / 'title_cover.png')
+
+    title_draw = ImageDraw.Draw(title)
+
+    rank_img = await wg_api.get_resource('tier', f'tier-{tier}')
+    icon_img = await wg_api.get_resource('usericon', info_data['icon_id'])
+    icon_img = icon_img.resize((84, 84)).convert('RGBA')
+    title.paste(icon_img, (54, 259), icon_img)
+    title.paste(rank_img, (732, 113), rank_img)
+
+    title_draw.text((155, 285), info_data['name'], W, cf(32), 'lm')
+    title_draw.text((155, 318), player_area_str, W, cf(20), 'lm')
+    title_draw.text((132, 373), like_and_dis, B, cf(20), 'mm')
+
+    title_draw.text((92, 419), play_times_str, W, cf(32), 'mm')
+    title_draw.text((205, 419), win_rate, W, cf(32), 'mm')
+    title_draw.text((318, 419), str(skin_num), W, cf(32), 'mm')
+
+    title_draw.text((799, 259), rank, W, cf(32), 'mm')
+
+    title_draw.text((633, 367), str(mvp_times), B, cf(26), 'lm')
+    title_draw.text((801, 367), str(svp_times), B, cf(26), 'lm')
+    title_draw.text((633, 443), str(kill5_times), B, cf(26), 'lm')
+    title_draw.text((801, 443), str(kill8_times), B, cf(26), 'lm')
+
+    title.paste(title_cover, (0, 0), title_cover)
+    # (900, 500)
+    return title
 
 
 async def draw_lol_info_img(ev: Event, uid: str) -> Union[str, bytes]:
@@ -44,17 +146,9 @@ async def draw_lol_info_img(ev: Event, uid: str) -> Union[str, bytes]:
         return get_error(profile_data)
 
     '''DEAL'''
-    _id, _area = uid.split(':')
-    player_area = LOL_GameArea[_area]
-    player_area_str = f"{player_area['name']}·Lv{info_data['level']}"
-    like_and_dis = f"{info_data['praise']}赞·{info_data['discredit']}踩"
     play_times = stat_data['recent_state']['play_times']
     win_times = stat_data['recent_state']['win_times']
 
-    mvp_times = stat_data['game_career']['total_mvp_times']
-    svp_times = stat_data['game_career']['total_svp_times']
-
-    kill8_times = stat_data['game_career']['total_god_likes']
     kill5_times = stat_data['game_career']['total_penta_kills']
 
     kill4_times = stat_data['game_career']['total_quadra_kills']
@@ -75,10 +169,6 @@ async def draw_lol_info_img(ev: Event, uid: str) -> Union[str, bytes]:
     longest_game = stat_data['game_career']['longest_game_num']
     shortest_game = stat_data['game_career']['shortest_game_num']
     champion_num = skin_data['champion_num']
-    skin_num = skin_data['skin_num']
-
-    tier = battle_data['season_list'][0]['tier']
-    queue = battle_data['season_list'][0]['queue']
 
     kda = stat_data['recent_state']['kda']
     kda_str = '{:.1f}'.format(kda / 1000)
@@ -113,65 +203,18 @@ async def draw_lol_info_img(ev: Event, uid: str) -> Union[str, bytes]:
     else:
         team_win_rate = '0.0%'
 
-    if tier != 255:
-        rank = f'{LOL_TIER[tier]}·{LOL_QUEUE[queue]}'
-    else:
-        rank = '无段位'
-
-    play_times_str = str(play_times)
     if play_times:
         win_rate = '{:.2f}%'.format((win_times / play_times) * 100)
     else:
         win_rate = 'NaN%'
 
-    '''BG'''
-    card = Image.new('RGBA', (900, 900))
-    card_mask = Image.open(TEXT_PATH / 'card_mask.png')
-    card_bg = json.loads(profile_data['cardbg'])
-    card_hero: str = card_bg['championSkin']['heroId']
-    card_skin: str = card_bg['championSkin']['skinId']
-    skin_id = card_skin.lstrip(card_hero)
-    splash_id = f'{card_hero}-{skin_id}'
-
-    card_img = await wg_api.get_resource('skins/splash', splash_id)
-    card_img = card_img.resize((960, 540)).convert('RGBA')
-    width, height = card_img.size
-    middle_bottom_pixel = (width // 2, height - 1)
-    rgb_value = card_img.getpixel(middle_bottom_pixel)
-    rgb_value = (15, 23, 36)
-
-    card.paste(card_img, (-30, 0), card_img)
     img = Image.new('RGBA', (900, 1800), rgb_value)
-    img.paste(card, (0, 0), card_mask)
 
-    '''title'''
-    title = Image.open(TEXT_PATH / 'title.png')
-    title_cover = Image.open(TEXT_PATH / 'title_cover.png')
-
-    title_draw = ImageDraw.Draw(title)
-
-    rank_img = await wg_api.get_resource('tier', f'tier-{tier}')
-    icon_img = await wg_api.get_resource('usericon', info_data['icon_id'])
-    icon_img = icon_img.resize((84, 84)).convert('RGBA')
-    title.paste(icon_img, (54, 259), icon_img)
-    title.paste(rank_img, (732, 113), rank_img)
-
-    title_draw.text((155, 285), info_data['name'], W, cf(32), 'lm')
-    title_draw.text((155, 318), player_area_str, W, cf(20), 'lm')
-    title_draw.text((132, 373), like_and_dis, B, cf(20), 'mm')
-
-    title_draw.text((92, 419), play_times_str, W, cf(32), 'mm')
-    title_draw.text((205, 419), win_rate, W, cf(32), 'mm')
-    title_draw.text((318, 419), str(skin_num), W, cf(32), 'mm')
-
-    title_draw.text((799, 259), rank, W, cf(32), 'mm')
-
-    title_draw.text((633, 367), str(mvp_times), B, cf(26), 'lm')
-    title_draw.text((801, 367), str(svp_times), B, cf(26), 'lm')
-    title_draw.text((633, 443), str(kill5_times), B, cf(26), 'lm')
-    title_draw.text((801, 443), str(kill8_times), B, cf(26), 'lm')
-
-    title.paste(title_cover, (0, 0), title_cover)
+    bg = await draw_lol_info_bg(profile_data)
+    title = await draw_lol_info_title(
+        uid, info_data, stat_data, battle_data, skin_data
+    )
+    img.paste(bg, (0, 0), bg)
     img.paste(title, (0, 0), title)
 
     '''mid'''

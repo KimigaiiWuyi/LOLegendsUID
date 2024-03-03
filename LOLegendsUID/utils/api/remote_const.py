@@ -238,6 +238,13 @@ TIER_ENUM_MAP = {
 }
 # LOL小段列表
 TIER_LEVEL = ('Ⅰ', 'Ⅱ', 'Ⅲ', 'Ⅳ', 'Ⅴ')
+
+GAME_DETAIL_MODE = {
+    'URF': '无限火力',
+    'CLASSIC': '匹配赛',
+}
+
+
 # LOL游戏模式
 GAME_MODE = {
     '1': '匹配赛',

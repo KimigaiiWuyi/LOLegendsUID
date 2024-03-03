@@ -136,7 +136,7 @@ class WeGameApi:
         )
         if isinstance(data, int):
             return data
-        return cast(List[BattleInfo], data['summoner'])
+        return cast(List[BattleInfo], data['battles'])
 
     async def get_player_recent_stat(
         self, uid: str, area: Optional[int] = None

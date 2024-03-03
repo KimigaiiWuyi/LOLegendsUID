@@ -67,7 +67,7 @@ class BattleInfo(TypedDict):
     skin_index: int
     game_score: int
     team_id: str
-    win: str
+    win: Literal['Win', 'Fail']
     kills: int
     deaths: int
     assists: int
@@ -289,90 +289,152 @@ class BattleReportAPIResponse(TypedDict):
     season_list: List[SeasonInfo]
 
 
-class BanInfo(TypedDict):
-    champion_id: int
-    ban_turn: int
-    ban_type: str
-
-
 class BattleHonour(TypedDict):
-    player_id: int
-    honors: int
-    double_kills: int
-    triple_kills: int
-    quadra_kills: int
-    penta_kills: int
-    legendary_kills: int
-    total_damage_dealt: int
-    total_damage_taken: int
-    total_healing_done: int
-    total_gold_earned: int
-    total_minions_killed: int
-    vision_score: int
+    gameLevel: str
+    isDoubleKills: int
+    isGodlike: int
+    isLargestAllMinionsKilled: int
+    isLargestAssists: int
+    isLargestChampionsKilled: int
+    isLargestGoldEarned: int
+    isLargestTotalDamageDealtToChampions: int
+    isLargestTotalDamageTaken: int
+    isLargestTurretsKilled: int
+    isMvp: int
+    isPentaKills: int
+    isQuadraKills: int
+    isSvp: int
+    isTripleKills: int
+    isUnrealKills: int
+    isWinWithLessTeammate: int
+    isZeroDeath: int
 
 
 class PlayerDetails(TypedDict):
-    account_id: str
-    sum_id: str
+    PERK0: int
+    PERK1: int
+    PERK2: int
+    PERK3: int
+    PERK4: int
+    PERK5: int
+    STAT_PERK_0: int
+    STAT_PERK_1: int
+    STAT_PERK_2: int
+    allMinionsKilled: int
+    assists: int
+    baronKills: int
+    barracksKilled: int
+    battleHonour: BattleHonour
+    championId: int
+    championUsedExp: int
+    championsKilled: int
+    consumablesPurchased: int
+    doubleKills: int
+    dragonKills: int
     exp: int
+    gameScore: int
+    goldEarned: int
+    goldSpent: int
+    hqKilled: int
+    item0: int
+    item1: int
+    item2: int
+    item3: int
+    item4: int
+    item5: int
+    item6: int
+    itemsPurchased: int
+    keystoneId: int
+    killingSpress: int
+    largestCriticalStrike: int
+    largestKillingSpree: int
+    largestMultiKill: int
     level: int
-    level_xp: int
-    rank_xp: int
-    ranked: int
-    league_id: int
-    loss: int
-    wins: int
-    order_num: int
-    games: int
-    league: int
+    loginIp: str
+    lolId: str
+    lpl: str
+    magicDamageDealtPlayer: int
+    magicDamageTaken: int
+    magicDamageToChampions: int
+    minionsKilled: int
     name: str
-    division: int
-    placement_games: int
-    is_placement: int
-    variation_lvl: int
-    battle_royale_wins: int
-    placement_games_team: int
-    is_placement_team: int
-    variation_lvl_team: int
-    created: str
-    updated: str
-    game_name: str
-    is_oob_available: bool
-    is_ability_haste_active: bool
-    ban_info: List[BanInfo]
-    battle_honours: List[BattleHonour]
+    neutralMinionsKilled: int
+    numDeaths: int
+    openid: str
+    original_area_id: str
+    original_lol_id: str
+    original_puu_id: str
+    pentaKills: int
+    perkStyle: int
+    perkSubStyle: int
+    physicalDamageDealtPlayer: int
+    physicalDamageTaken: int
+    physicalDamageToChampions: int
+    playerAugment1: int
+    playerAugment2: int
+    playerAugment3: int
+    playerAugment4: int
+    playerSubteam: str
+    playerSubteamPlacement: str
+    position: str
+    puuId: str
+    quadraKills: int
+    sightWardsBoughtInGame: int
+    skinIndex: int
+    skinInfoFor2V2Json: str
+    spell1Cast: int
+    spell2Cast: int
+    spell3Cast: int
+    spell4Cast: int
+    summonSpell1Cast: int
+    summonSpell1Id: int
+    summonSpell2Cast: int
+    summonSpell2Id: int
+    teamId: str
+    teamMadeSize: int
+    timeCcingOthers: int
+    totalDamageDealt: int
+    totalDamageTaken: int
+    totalDamageToChampions: int
+    totalHealth: int
+    totalTimeSpentDead: int
+    translate_areaId: str
+    tripleKills: int
+    trueDemageToChampions: int
+    turretsKilled: int
+    uinId: str
+    unrealKills: int
+    visionScore: int
+    visionWardsBoughtInGame: int
+    wardKilled: int
+    wardPlaced: int
+    wardPlacedDetector: int
+    wardSkinIndex: int
+    wasAfk: int
+    win: str
+
+
+class BanInfo(TypedDict):
+    championId: int
+    pickTurn: int
+    teamId: str
 
 
 class TeamDetails(TypedDict):
-    account_id: str
-    sum_id: str
-    exp: int
-    level: int
-    level_xp: int
-    rank_xp: int
-    ranked: int
-    league_id: int
-    loss: int
-    wins: int
-    order_num: int
-    games: int
-    league: int
-    name: str
-    division: int
-    placement_games: int
-    is_placement: int
-    variation_lvl: int
-    battle_royale_wins: int
-    placement_games_team: int
-    is_placement_team: int
-    variation_lvl_team: int
-    created: str
-    updated: str
-    game_name: str
-    is_oob_available: bool
-    is_ability_haste_active: bool
-    ban_info: List[BanInfo]
-    battle_honours: List[BattleHonour]
+    banInfoList: List[BanInfo]
+    isSurrender: int
+    teamElo: int
+    teamId: str
+    totalAssists: int
+    totalBaronKills: int
+    totalBaseKilled: int
+    totalDampenKilled: int
+    totalDeaths: int
+    totalDragonKills: int
+    totalGoldEarned: int
+    totalKills: int
+    totalTurretsKilled: int
+    win: str
 
 
 class BattleDetail(TypedDict):
