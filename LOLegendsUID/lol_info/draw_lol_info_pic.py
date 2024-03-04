@@ -81,10 +81,18 @@ async def draw_lol_info_title(
     tier = battle_data['season_list'][0]['tier']
     queue = battle_data['season_list'][0]['queue']
 
+    team_tier = battle_data['season_list'][0]['team_tier']
+    team_queue = battle_data['season_list'][0]['team_queue']
+
     if tier != 255:
         rank = f'{LOL_TIER[tier]}·{LOL_QUEUE[queue]}'
     else:
         rank = '无段位'
+
+    if team_tier != 255:
+        team_rank = f'{LOL_TIER[team_tier]}·{LOL_QUEUE[team_queue]}'
+    else:
+        team_rank = '无段位'
 
     play_times_str = str(play_times)
     if play_times:
@@ -99,10 +107,12 @@ async def draw_lol_info_title(
     title_draw = ImageDraw.Draw(title)
 
     rank_img = await wg_api.get_resource('tier', f'tier-{tier}')
+    team_rank_img = await wg_api.get_resource('tier', f'tier-{team_tier}')
     icon_img = await wg_api.get_resource('usericon', info_data['icon_id'])
     icon_img = icon_img.resize((84, 84)).convert('RGBA')
     title.paste(icon_img, (54, 259), icon_img)
     title.paste(rank_img, (732, 113), rank_img)
+    title.paste(team_rank_img, (572, 113), team_rank_img)
 
     title_draw.text((155, 285), info_data['name'], W, cf(32), 'lm')
     title_draw.text((155, 318), player_area_str, W, cf(20), 'lm')
@@ -113,6 +123,7 @@ async def draw_lol_info_title(
     title_draw.text((318, 419), str(skin_num), W, cf(32), 'mm')
 
     title_draw.text((799, 259), rank, W, cf(32), 'mm')
+    title_draw.text((639, 259), team_rank, W, cf(32), 'mm')
 
     title_draw.text((633, 367), str(mvp_times), B, cf(26), 'lm')
     title_draw.text((801, 367), str(svp_times), B, cf(26), 'lm')
