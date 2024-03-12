@@ -35,6 +35,10 @@
 <a><img src="https://s11.ax1x.com/2024/01/30/pFujpA1.jpg"></a>
 </p></details>
 
+<details><summary>查询战绩信息 - 命令: lol对局记录</summary><p>
+<a><img src="https://img2.imgtp.com/2024/03/13/ZTDfSsVO.jpg"></a>
+</p></details>
+
 <details><summary>添加CK（私聊） - 命令: lol添加ck</summary><p>
 还没有图
 </p></details>
