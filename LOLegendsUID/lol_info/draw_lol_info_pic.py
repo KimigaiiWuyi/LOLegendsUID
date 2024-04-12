@@ -2,6 +2,7 @@ import json
 import random
 from pathlib import Path
 from typing import List, Union
+from json import JSONDecodeError
 
 from PIL import Image, ImageDraw
 from gsuid_core.models import Event
@@ -34,9 +35,15 @@ async def draw_lol_info_bg(profile_data: Profiles):
     '''BG'''
     card = Image.new('RGBA', (900, 900))
     card_mask = Image.open(TEXT_PATH / 'card_mask.png')
-    card_bg = json.loads(profile_data['cardbg'])
-    card_hero: str = card_bg['championSkin']['heroId']
-    card_skin: str = card_bg['championSkin']['skinId']
+
+    try:
+        card_bg = json.loads(profile_data['cardbg'])
+        card_hero: str = card_bg['championSkin']['heroId']
+        card_skin: str = card_bg['championSkin']['skinId']
+    except JSONDecodeError:
+        card_hero = '1'
+        card_skin = '001'
+
     skin_id = card_skin.lstrip(card_hero)
     splash_id = f'{card_hero}-{skin_id}'
 
