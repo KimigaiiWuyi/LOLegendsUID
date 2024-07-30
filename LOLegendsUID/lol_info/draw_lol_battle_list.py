@@ -85,7 +85,9 @@ async def draw_lol_battle_list_img(ev: Event, uid: str) -> Union[str, bytes]:
             continue
 
         for i, team in enumerate(detail['team_details']):
-            team_elo = team['teamElo']
+            # 官方已删除该参数
+            # team_elo = team['teamElo']
+            team_elo = '已隐藏'
             team_gold = team['totalGoldEarned']
             team_word = Image.open(TEXT_PATH / "team_word.png")
             team_draw = ImageDraw.Draw(team_word)

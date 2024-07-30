@@ -304,8 +304,11 @@ async def draw_lol_info_img(ev: Event, uid: str) -> Union[str, bytes]:
         exp = str(champion['used_exp'])
         total = champion['total']
         wins = champion['wins']
-        win_rate = '{:.1f}%'.format((wins / total) * 100)
-        win_str = f'{win_rate} / {total}场'
+        if not total:
+            win_rate = '{:.1f}%'.format((wins / total) * 100)
+            win_str = f'{win_rate} / {total}场'
+        else:
+            win_str = 'NaN%'
 
         champion_draw.text((90, 210), champion_name, W, cf(26), 'mm')
         champion_draw.text((90, 270), exp, (255, 210, 150), cf(28), 'mm')
