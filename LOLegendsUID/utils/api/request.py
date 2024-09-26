@@ -399,7 +399,10 @@ class WeGameApi:
         return cast(TFTBattleDetail, data['battle_detail'])
 
     async def get_hero_list(self):
-        data = await self._help_request(HERO_LIST_API)
+        data = await self._help_request(
+            HERO_LIST_API,
+            False,
+        )
         if isinstance(data, int):
             return data
         data = json.dumps(data, ensure_ascii=False, indent=2)
@@ -484,12 +487,15 @@ class WeGameApi:
         else:
             return Image.new('RGBA', (128, 128))
 
-    async def _help_request(self, url: str) -> Union[Dict, int]:
+    async def _help_request(
+        self, url: str, is_log: bool = True
+    ) -> Union[Dict, int]:
         try:
             async with AsyncClient(verify=False) as session:
                 data = await session.get(url)
                 d = data.text
-                logger.debug(d)
+                if is_log:
+                    logger.debug(d)
                 return json.loads(d)
         except:  # noqa:E722
             return -500
