@@ -3,13 +3,16 @@ from typing import Dict
 from gsuid_core.sv import SV
 from gsuid_core.bot import Bot
 from gsuid_core.models import Event
+from gsuid_core.logger import logger
+from gsuid_core.server import on_core_start
 from gsuid_core.message_models import Button
 from gsuid_core.utils.message import send_diff_msg
 
 from .add_ck import add_cookie
 from ..utils.error_reply import get_error
-from ..utils.database.models import LOLBind
+from ..utils.lol_config import majs_config
 from .search_player import search_player_with_name
+from ..utils.database.models import LOLBind, LOLUser
 
 lol_user_bind = SV('LOL用户绑定')
 lol_add_ck = SV('LOL添加CK', area='DIRECT')
@@ -104,3 +107,25 @@ async def send_lol_search_msg(bot: Bot, ev: Event):
         buttons = None
         im = get_error(players)
     await bot.send_option(im, buttons)
+
+
+@on_core_start()
+async def sync_wegame_ck_to_config() -> None:
+    """启动时把数据库CK池同步到网页控制台WegameCK文本框。
+
+    文本框为空且数据库存在CK时, 取第一条回填, 保证后台看到的
+    就是当前实际生效的CK; 文本框已有内容则不覆盖。
+    """
+    logger.info('[LOL] 检查WegameCK同步: 数据库 -> 网页控制台配置')
+    try:
+        if majs_config.get_config('wegame_cookie').data:
+            logger.info('[LOL] WegameCK文本框已有内容, 跳过同步')
+            return
+        users = await LOLUser.get_all_user()
+        if users and users[0].cookie:
+            majs_config.set_config('wegame_cookie', users[0].cookie)
+            logger.info('[LOL] 已将数据库中的WegameCK同步至网页控制台配置')
+        else:
+            logger.info('[LOL] 数据库中没有可用CK, 无需同步')
+    except Exception as e:
+        logger.warning(f'[LOL] WegameCK启动同步失败: {e}')

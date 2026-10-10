@@ -3,14 +3,21 @@ from typing import Dict
 
 # 设定一个配置文件（json）保存文件路径
 from gsuid_core.data_store import get_res_path
-from gsuid_core.utils.plugins_config.models import GSC
 
 # 然后添加到GsCore网页控制台中
 from gsuid_core.utils.plugins_config.gs_config import StringConfig
+from gsuid_core.utils.plugins_config.models import GSC, GsStrConfig
 
 # 建立自己插件的CONFIG_DEFAULT
 # 名字无所谓, 类型一定是Dict[str, GSC]，以下为示例，可以添加无数个配置
-CONIFG_DEFAULT: Dict[str, GSC] = {}
+CONIFG_DEFAULT: Dict[str, GSC] = {
+    'wegame_cookie': GsStrConfig(
+        'WegameCK',
+        '当前生效的Wegame Cookie, 直接粘贴保存即可更新; '
+        '发送[lol添加ck]命令添加的CK也会自动同步到此处',
+        '',
+    ),
+}
 
 CONFIG_PATH = get_res_path('LOLegendsUID') / 'config.json'
 
